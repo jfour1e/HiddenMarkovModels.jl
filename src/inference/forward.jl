@@ -74,14 +74,17 @@ function _forward_digest_observation!(
     a, b = current_state_marginals, current_obs_likelihoods
 
     obs_logdensities!(b, hmm, obs, control; error_if_not_finite)
+
     logm = maximum(b)
     b .= exp.(b .- logm)
 
     a .*= b
+
     c = inv(sum(a))
     lmul!(c, a)
 
     logL = -log(c) + logm
+    
     return c, logL
 end
 

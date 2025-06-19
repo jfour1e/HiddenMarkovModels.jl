@@ -131,10 +131,15 @@ function obs_logdensities!(
     logb::AbstractVector{T}, hmm::AbstractHMM, obs, control; error_if_not_finite::Bool=true
 ) where {T}
     dists = obs_distributions(hmm, control)
-    @simd for i in eachindex(logb, dists)
-        logb[i] = logdensityof(dists[i], obs)
+    @inbounds @simd for i in eachindex(logb, dists)
+        val = logdensityof(dists[i], obs)
+        logb[i] = isfinite(val) ? val : 1e-12
     end
-    error_if_not_finite && @argcheck maximum(logb) < typemax(T)
+
+    if error_if_not_finite
+        @argcheck all(isfinite, logb)
+    end
+
     return nothing
 end
 
@@ -166,7 +171,7 @@ function Random.rand(rng::AbstractRNG, hmm::AbstractHMM, control_seq::AbstractVe
 
     dists1 = obs_distributions(hmm, control_seq[1])
     obs1 = rand(rng, dists1[state1])
-    obs_seq = Vector{typeof(obs1)}(undef, T)
+    obs_seq = Vector{Any}(undef, T)
     obs_seq[1] = obs1
 
     for t in 2:T

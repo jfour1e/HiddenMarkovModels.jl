@@ -21,6 +21,11 @@ using Random: Random, AbstractRNG, default_rng
 using SparseArrays: AbstractSparseArray, SparseMatrixCSC, nonzeros, nnz, nzrange, rowvals
 using StatsAPI: StatsAPI, fit, fit!
 using StatsFuns: log2π
+using UnPack
+using Optim
+using Printf
+using Distributions: Uniform
+import DensityInterface: logdensityof
 
 export AbstractHMM, HMM
 export initialization, transition_matrix, obs_distributions
@@ -37,6 +42,7 @@ include("utils/fit.jl")
 include("utils/lightdiagnormal.jl")
 include("utils/lightcategorical.jl")
 include("utils/limits.jl")
+include("utils/Emissions.jl")
 
 include("inference/predict.jl")
 include("inference/forward.jl")
