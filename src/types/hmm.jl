@@ -51,7 +51,6 @@ log_transition_matrix(hmm::HMM) = hmm.logtrans
 obs_distributions(hmm::HMM) = hmm.dists
 
 ## Fitting
-
 function StatsAPI.fit!(
     hmm::HMM,
     fb_storage::ForwardBackwardStorage,
