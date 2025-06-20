@@ -114,11 +114,12 @@ end
 ##################################
 # Fallbacks for HMM #
 ##################################
+PENALTY = -1e6 # define penalty to avoid state degeneracy
 
 function logdensityof(model::DriftDiffusionModel, x::AbstractResult)
-    return x isa DDMResult ? DensityInterface.logdensityof(model, x) : -Inf
+    return x isa DDMResult ? DensityInterface.logdensityof(model, x) : PENALTY
 end
 
 function logdensityof(model::UniformEmission, x::AbstractResult)
-    return x isa UniformResult ? DensityInterface.logdensityof(model, x) : -Inf
+    return x isa UniformResult ? DensityInterface.logdensityof(model, x) : PENALTY
 end
